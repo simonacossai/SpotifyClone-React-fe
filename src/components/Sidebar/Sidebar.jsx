@@ -2,19 +2,45 @@ import React, { Component } from 'react'
 import './Sidebar.css';
 import logo from '../../asset/SpotifyLogo.png'
 import { Link, withRouter } from 'react-router-dom'
-
 class Sidebar extends Component {
+    state={
+        user:[]
+    }
+    logout=async()=>{
+        localStorage.clear()
+        this.props.history.push('/')
+    }
+    componentDidMount(){
+        this.getProfile()
+    }
+
+    getProfile=async()=>{
+        let id=  localStorage.getItem("id");
+        try {
+            let response = await fetch("http://localhost:3001/users/"+ id)
+            if (response.ok) {
+                let user = await response.json()
+                console.log("state",user)
+                this.setState({user})
+            } else {
+                console.log("error during fetch")
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     render() {
         return (
             <>
                 <nav
                     className="navbar navbar-expand-sm navbar-dark bg-dark navbar-fixed-left">
-                    <Link to="/">
+                    <Link to="/home">
                     <a className="navbar-brand mt-3" href="#"><img src={logo} width="140" height="42"/></a>
                     </Link>
                     <div className="collapse navbar-collapse mt-3" id="navbarNavDropdown">
                         <ul className="navbar-nav text-left">
-                        <Link to="/" className="add-link">
+                        <Link to="/home" className="add-link">
                             <li className="nav-item active text-left">
                                 <a className="nav-link" href="homePage.html"
                                 ><svg
@@ -85,12 +111,12 @@ class Sidebar extends Component {
                             </li>
                             </Link>
                             <span className="profile-nav">
-                                <li className="nav-item nav-profile-item">
+                                <li className="nav-item nav-profile-item" onClick={()=>this.logout()}>
                                     <a className="nav-link bottom" href="#">
                                         <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-download mr-2" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                             <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
                                             <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
-                                        </svg>   Install App</a>
+                                        </svg>Log out</a>
                                 </li>
                                 <li className="nav-item">
                                     <a className="nav-link bottom" href="#" style={{ fontSize: "15px" }}>
@@ -98,7 +124,7 @@ class Sidebar extends Component {
                                             <path d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z" />
                                             <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                                             <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z" />
-                                        </svg>  User 82903
+                                   </svg>  {this.state.user.username ?? "User 82903"}
                                       </a>
                                 </li>
                             </span>

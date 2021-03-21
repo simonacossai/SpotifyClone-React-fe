@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Gallery from "./Gallery";
 import './Gallery.css';
+import Sidebar from '../Sidebar/Sidebar'
+import Player from '../Player/Player'
 
 import { Alert } from "react-bootstrap";
 
@@ -13,16 +15,14 @@ class Home extends Component {
     error: false,
   };
 
-  url = "https://deezerdevs-deezer.p.rapidapi.com/search?q=";
-
+  url = "http://localhost:3001/music/songs/";
+   token=  localStorage.getItem("token");
   fetchsongs = () => {
     Promise.all([
       fetch(this.url + "eminem",{
-        "method": "GET",
-        "headers": {
-            "x-rapidapi-key": "ec5577de62msh9d203d454724b43p1f3c08jsnad1a59a31f6f",
-            "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com"
-        }
+        headers: new Headers({
+          authtoken: `${this.token}`,
+        }),
       })
         .then((response) => response.json())
         .then((responseObject) => {
@@ -31,11 +31,9 @@ class Home extends Component {
           );
         }),
       fetch(this.url + "muse",{
-        "method": "GET",
-        "headers": {
-            "x-rapidapi-key": "ec5577de62msh9d203d454724b43p1f3c08jsnad1a59a31f6f",
-            "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com"
-        }
+        headers: new Headers({
+          authtoken: `${this.token}`,
+        }),
       })
         .then((response) => response.json())
         .then((responseObject) =>
@@ -43,11 +41,9 @@ class Home extends Component {
          
         ),
       fetch(this.url + "halsey",{
-        "method": "GET",
-        "headers": {
-            "x-rapidapi-key": "ec5577de62msh9d203d454724b43p1f3c08jsnad1a59a31f6f",
-            "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com"
-        }
+        headers: new Headers({
+          authtoken: `${this.token}`,
+        }),
       })
         .then((response) => response.json())
         .then((responseObject) =>
@@ -63,10 +59,13 @@ class Home extends Component {
 
   componentDidMount() {
     this.fetchsongs();
+    console.log(this.state.arianaGrandeSongs)
   }
 
   render() {
     return (
+      <>
+           <Sidebar/>
       <div>
         <div className="container-fluid mb-5">
   
@@ -129,6 +128,8 @@ class Home extends Component {
             }
         </div>
       </div>
+      <Player />
+      </>
     );
   }
 }

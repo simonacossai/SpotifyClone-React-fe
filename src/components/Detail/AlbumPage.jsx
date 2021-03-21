@@ -2,6 +2,8 @@ import React from 'react'
 import { Badge, Card, Col, Container, Row, Spinner, ListGroupItem, ListGroup } from 'react-bootstrap'
 import './AlbumPage.css';
 import {BsMusicNote} from 'react-icons/bs';
+import Sidebar from '../Sidebar/Sidebar'
+import Player from '../Player/Player'
 
 class AlbumPage extends React.Component {
     state = {
@@ -12,16 +14,14 @@ class AlbumPage extends React.Component {
 
     componentDidMount = async () => {
         const albumIdFromTheSearchBar = this.props.match.params.id;
+        let token=  localStorage.getItem("token");
 
         try {
-            let response = await fetch("https://deezerdevs-deezer.p.rapidapi.com/album/"+ albumIdFromTheSearchBar,
-                {
-                    "method": "GET",
-                    "headers": {
-                        "x-rapidapi-key": "ec5577de62msh9d203d454724b43p1f3c08jsnad1a59a31f6f",
-                        "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com"
-                    }
-                })
+            let response = await fetch("http://localhost:3001/music/album/"+ albumIdFromTheSearchBar,{
+                headers: new Headers({
+                    authtoken: `${token}`,
+                  }),
+            })
             if (response.ok) {
                 let song = await response.json()
                 this.setState({
@@ -40,6 +40,8 @@ class AlbumPage extends React.Component {
         console.log("props", this.state.props)
 
         return (
+<>
+<Sidebar/>
 
             <div className="container mt-5 middleRow">
                 <div className="row">
@@ -85,7 +87,8 @@ class AlbumPage extends React.Component {
                     </div>
                 </div>
             </div>
-
+            <Player />
+</>
         )
     }
 }

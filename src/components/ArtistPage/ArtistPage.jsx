@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import './ArtistPage.css';
 import Gallery from "../Home/Gallery";
 import { Button } from 'react-bootstrap';
-
+import Sidebar from '../Sidebar/Sidebar'
+import Player from '../Player/Player'
 
 export default class ArtistPage extends Component {
     state = {
@@ -11,15 +12,14 @@ export default class ArtistPage extends Component {
         error: false,
       };
     
-      url = "https://deezerdevs-deezer.p.rapidapi.com/search?q=";
-    
+      url = "http://localhost:3001/music/songs/";
+      token=  localStorage.getItem("token");
+
       fetchsongs = () => {
           fetch(this.url + "beatles",{
-            "method": "GET",
-            "headers": {
-                "x-rapidapi-key": "ec5577de62msh9d203d454724b43p1f3c08jsnad1a59a31f6f",
-                "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com"
-            }
+            headers: new Headers({
+              authtoken: `${this.token}`,
+            }),
           })
             .then((response) => response.json())
             .then((responseObject) => {
@@ -40,6 +40,7 @@ export default class ArtistPage extends Component {
     render() {
         return (
             <>
+                 <Sidebar/>
 <div className="container-fluid mb-5">
         <div className="jumbotron jumbotron-fluid">
           <div className="container text-center jumbotron-text">
@@ -71,6 +72,7 @@ export default class ArtistPage extends Component {
                   songs={this.state.beatlesSongs}
                   props={this.props} 
                 />
+                      <Player />
             </>
         )
     }
